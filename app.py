@@ -11,9 +11,9 @@ from linebot.models import *
 app = Flask(__name__)
 
 # Channel Access Token
-line_bot_api = LineBotApi('rPzH0qSFLM093CZwNLrEw7FbzvyZh+LzSzk6nK9LCqzag+TgDcQenMPuW9AMLvBka79K4W/IYOo0K3B9R+Zm8as0KtX1THLS2tj44eHnfkWtZNJr7JvEjPfLaNtC/q3OJBgeqqUl1X2t8ISuQifrcgdB04t89/1O/w1cDnyilFU=')
+line_bot_api = LineBotApi('6ol/TkzOsx2Ej9mikY8+FU6SegSuiLpMWg8v9aLR+VJ/ERdnRFmEYoLQ2QCXZQb34Mhr5saLpkSH+5FeyQa3zaDekwISNXef8rq8FVSyuSAiSVFiQakv9u9PM6qq3dMrZ7YxbsxB2pyItBZaISwdRgdB04t89/1O/w1cDnyilFU=')
 # Channel Secret
-handler = WebhookHandler('6f1bcdf89caea3506ee178e114cb3fb2')
+handler = WebhookHandler('e73f4ba68c0127b885304278fe5fd152')
 
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
@@ -33,8 +33,12 @@ def callback():
 # 處理訊息
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    message = TextSendMessage(text = Reply(event.message.text))
-    line_bot_api.reply_message(event.reply_token, message)
+    try:
+        message = TextSendMessage(text = Reply(event.message.text))
+        line_bot_api.reply_message(event.reply_token, message)
+    except exceptions as ex:
+        line_bot_api.reply_message(event.reply_token,
+            TextSendMessage(text = str(ex)))
 
 def Reply(text):
     if text == "hi" :
