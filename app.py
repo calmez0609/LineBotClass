@@ -33,16 +33,7 @@ def callback():
 # 處理訊息
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    try:
-        message = TextSendMessage(text = Reply(event.message.text))
-        line_bot_api.reply_message(event.reply_token, message)
-    except exceptions as ex:
-        line_bot_api.reply_message(event.reply_token,
-            TextSendMessage(text = str(ex)))
-
-def Reply(text):
-    if text == "hi" :
-        return 'hello'
+    line_bot_api.reply_message(event.reply_token, TextSendMessage(text = event.message.text)
 
 import os
 if __name__ == "__main__":
