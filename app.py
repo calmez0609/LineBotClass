@@ -55,7 +55,7 @@ def Button(event):
             actions=[
                 PostbackTemplateAction(
                     label='還沒',
-                    data='這裡留空就好，不要刪掉'
+                    data='還沒'
                 ),
                 MessageTemplateAction(
                     label='差不多了',
@@ -74,7 +74,7 @@ def Reply(event):
     Ktemp = KeyWord(event)
     if Ktemp[0]:
         line_bot_api.reply_message(event.reply_token,
-            TextSendMessage(text = Ktemp[1]))
+            TextSendMessage(text = event.source.type))
     else:
         line_bot_api.reply_message(event.reply_token,
             Button(event))
@@ -88,7 +88,13 @@ def handle_message(event):
         line_bot_api.reply_message(event.reply_token, 
             TextSendMessage(text=str(e)))
 
-#----------複製到這裡結束----------
+#處理Postback
+@handler.add(PostbackEvent)
+def handle_postback(event):
+    command = event.postback.data.split(',')
+    if command[0] == "還沒":
+        line_bot_api.reply_message(event.reply_token, 
+            TextSendMessage(text="還沒就趕快練習去~~~"))
 
 import os
 if __name__ == "__main__":
