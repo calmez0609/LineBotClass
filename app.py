@@ -49,7 +49,7 @@ def Button(event):
     return TemplateSendMessage(
         alt_text='特殊訊息，請進入手機查看',
         template=ButtonsTemplate(
-            thumbnail_image_url='https://example.com/image.jpg',
+            thumbnail_image_url='https://github.com/54bp6cl6/LineBotClass/blob/master/logo.jpg?raw=true',
             title='HPClub - Line Bot 教學',
             text='大家學會了ㄇ',
             actions=[
