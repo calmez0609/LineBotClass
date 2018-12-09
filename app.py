@@ -30,60 +30,65 @@ def callback():
         abort(400)
     return 'OK'
 
-'''def KeyWord(text):
+#----------從這裡開始複製----------
+
+#關鍵字系統
+def KeyWord(event):
     KeyWordDict = {"你好":"你也好啊",
                    "你是誰":"我是大帥哥",
-                   "帥":"帥炸了"}
+                   "帥":"帥炸了",
+                   "差不多了":"讚!!!"}
+                   
     for k in KeyWordDict.keys():
-        if text.find(k) != -1:
+        if event.message.text.find(k) != -1:
             return [True,KeyWordDict[k]]
     return [False]
-'''
+
+#按鈕版面系統
 def Button(event):
-    message = TemplateSendMessage(
-        alt_text='Buttons template',
+    return TemplateSendMessage(
+        alt_text='特殊訊息，請進入手機查看',
         template=ButtonsTemplate(
             thumbnail_image_url='https://example.com/image.jpg',
-            title='Menu',
-            text='Please select',
+            title='HPClub - Line Bot 教學',
+            text='大家學會了ㄇ',
             actions=[
                 PostbackTemplateAction(
-                    label='postback',
-                    text='postback text',
-                    data='action=buy&itemid=1'
+                    label='還沒',
+                    data='這裡留空就好，不要刪掉'
                 ),
                 MessageTemplateAction(
-                    label='message',
-                    text='message text'
+                    label='差不多了',
+                    text='差不多了'
                 ),
                 URITemplateAction(
-                    label='uri',
-                    uri='http://example.com/'
+                    label='幫我們按個讚',
+                    uri='https://www.facebook.com/ShuHPclub'
                 )
             ]
         )
     )
-    line_bot_api.reply_message(event.reply_token, message)
 
-'''def Reply(event):
+#回覆函式
+def Reply(event):
     Ktemp = KeyWord(event.message.text)
     if Ktemp[0]:
         line_bot_api.reply_message(event.reply_token,
             TextSendMessage(text = Ktemp[1]))
     else:
         line_bot_api.reply_message(event.reply_token,
-            TextSendMessage(text = event.message.text))
-            '''
+            Button(event))
 
 # 處理訊息
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     try:
-        Button(event)
-        #Reply(event)
+        Reply(event)
     except Exception as e:
         line_bot_api.reply_message(event.reply_token, 
             TextSendMessage(text=str(e)))
+
+#----------複製到這裡結束----------
 
 import os
 if __name__ == "__main__":
