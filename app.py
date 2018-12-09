@@ -38,7 +38,7 @@ def KeyWord(event):
                    "你是誰":"我是大帥哥",
                    "帥":"帥炸了",
                    "差不多了":"讚!!!"}
-                   
+
     for k in KeyWordDict.keys():
         if event.message.text.find(k) != -1:
             return [True,KeyWordDict[k]]
@@ -71,7 +71,7 @@ def Button(event):
 
 #回覆函式
 def Reply(event):
-    Ktemp = KeyWord(event.message.text)
+    Ktemp = KeyWord(event)
     if Ktemp[0]:
         line_bot_api.reply_message(event.reply_token,
             TextSendMessage(text = Ktemp[1]))
