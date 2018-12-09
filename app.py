@@ -37,7 +37,9 @@ def KeyWord(event):
     KeyWordDict = {"你好":"你也好啊",
                    "你是誰":"我是大帥哥",
                    "帥":"帥炸了",
-                   "差不多了":"讚!!!"}
+                   "差不多了":"讚!!!",
+                   "幹":"發現關鍵字「幹」\n人豪告訴我：\n「想說爛就說爛，\n想罵髒話就罵幹」"
+                   }
 
     for k in KeyWordDict.keys():
         if event.message.text.find(k) != -1:
@@ -72,12 +74,13 @@ def Button(event):
 #回覆函式
 def Reply(event):
     Ktemp = KeyWord(event)
-    if Ktemp[0]:
-        line_bot_api.reply_message(event.reply_token,
-            TextSendMessage(text = event.source.type))
-    else:
-        line_bot_api.reply_message(event.reply_token,
-            Button(event))
+    if event.source.type == 'user':
+        if Ktemp[0]:
+            line_bot_api.reply_message(event.reply_token,
+                TextSendMessage(text = Ktemp[1]))
+        else:
+            line_bot_api.reply_message(event.reply_token,
+                Button(event))
 
 # 處理訊息
 @handler.add(MessageEvent, message=TextMessage)
