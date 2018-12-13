@@ -95,6 +95,7 @@ def handle_postback(event):
     if command[0] == "還沒":
         line_bot_api.reply_message(event.reply_token, 
             TextSendMessage(text="還沒就趕快練習去~~~"))
+        line_bot_api.push_message(event.source.user_id, TextSendMessage(text="喔齁我來搭訕你了"))
 
 import os
 if __name__ == "__main__":
