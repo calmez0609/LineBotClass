@@ -89,9 +89,8 @@ def Command(event):
 #回覆函式，指令 > 關鍵字 > 按鈕
 def Reply(event):
     if not Command(event):
-    elif not Keyword(event)
-    else:
-        Button(event)
+    elif not Keyword(event):
+    else:Button(event)
 
 # 處理訊息
 @handler.add(MessageEvent, message=TextMessage)
