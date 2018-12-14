@@ -37,8 +37,7 @@ def Keyword(event):
     KeyWordDict = {"你好":["text","你也好啊"],
                    "你是誰":["text","我是大帥哥"],
                    "差不多了":["text","讚!!!"],
-                   "帥":["sticker",'1','120'],
-                   "(heart)":["text","(heart)(heart)"],}
+                   "帥":["sticker",'1','120']}
 
     for k in KeyWordDict.keys():
         if event.message.text.find(k) != -1:
@@ -119,8 +118,8 @@ def handle_sticker_message(event):
     line_bot_api.reply_message(
         event.reply_token,
         StickerSendMessage(
-            package_id='1',
-            sticker_id='3')
+            package_id=event.message.package_id,
+            sticker_id=event.message.sticker_id)
     )
 
 import os
