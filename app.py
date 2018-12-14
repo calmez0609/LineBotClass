@@ -52,7 +52,7 @@ def Keyword(event):
 
 #按鈕版面系統
 def Button(event):
-    line_bot_api.reply_message(event.reply_token TemplateSendMessage(
+    line_bot_api.reply_message(event.reply_token,TemplateSendMessage(
         alt_text='特殊訊息，請進入手機查看',
         template=ButtonsTemplate(
             thumbnail_image_url='https://github.com/54bp6cl6/LineBotClass/blob/master/logo.jpg?raw=true',
