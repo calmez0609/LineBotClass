@@ -109,6 +109,15 @@ def handle_postback(event):
     if command[0] == "還沒":
         line_bot_api.reply_message(event.reply_token, 
             TextSendMessage(text="還沒就趕快練習去~~~"))
+        
+@handler.add(MessageEvent, message=StickerMessage)
+def handle_sticker_message(event):
+    line_bot_api.reply_message(
+        event.reply_token,
+        StickerSendMessage(
+            package_id='1',
+            sticker_id='3')
+    )
 
 import os
 if __name__ == "__main__":
