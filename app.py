@@ -37,7 +37,8 @@ def Keyword(event):
     KeyWordDict = {"你好":["text","你也好啊"],
                    "你是誰":["text","我是大帥哥"],
                    "差不多了":["text","讚!!!"],
-                   "帥":["sticker",'1','120'],}
+                   "帥":["sticker",'1','120'],
+                   "(heart)":["text","(heart)(heart)"],}
 
     for k in KeyWordDict.keys():
         if event.message.text.find(k) != -1:
