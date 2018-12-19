@@ -129,8 +129,7 @@ def handle_message(event):
             '''
         else:
             userlist[event.source.user_id] = '-1';
-            line_bot_api.reply_message(event.reply_token, 
-                TextSendMessage(text=userlist[event.source.user_id]))
+            handle_message(event)
         Update(userlist)
     except Exception as e:
         line_bot_api.reply_message(event.reply_token, 
