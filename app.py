@@ -52,7 +52,7 @@ def Login(event,userlist):
         i+=1
     return -1
 
-def Update(user):
+def Update(userlist):
     file = open('users','r')
     for user in userlist.keys():
         file.write(user+','+userlist[user])
@@ -131,6 +131,7 @@ def handle_message(event):
             userlist[event.source.user_id] = -1;
             line_bot_api.reply_message(event.reply_token, 
                 TextSendMessage(text="OK"))
+        Update(userlist)
     except Exception as e:
         line_bot_api.reply_message(event.reply_token, 
             TextSendMessage(text=str(e)))
