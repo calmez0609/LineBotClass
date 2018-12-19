@@ -40,6 +40,7 @@ def GetUserlist():
         temp = file.readline().strip().split(',')
         if temp[0] == "" : break
         userlist[temp[0]] = temp[1]
+    file.close()
     return userlist
 
 #登入系統
@@ -50,6 +51,12 @@ def Login(event,userlist):
             return i
         i+=1
     return -1
+
+def Update(user):
+    file = open('users','r')
+    for user in userlist.keys():
+        file.write(user+','+userlist[user])
+    file.close()
 
 #關鍵字系統
 def KeyWord(event):
@@ -133,7 +140,7 @@ def handle_message(event):
 def handle_postback(event):
     command = event.postback.data.split(',')
     if command[0] == "還沒":
-        line_bot_api.reply_message(event.reply_token, 
+        line_bot_api.reply_message(event.reply_token,
             TextSendMessage(text="還沒就趕快練習去~~~"))
 
 import os
