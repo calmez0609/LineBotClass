@@ -53,7 +53,7 @@ def Login(event,userlist):
     return -1
 
 def Update(userlist):
-    file = open('users','r')
+    file = open('users','w')
     for user in userlist.keys():
         file.write(user+','+userlist[user])
     file.close()
