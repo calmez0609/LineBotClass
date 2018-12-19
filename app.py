@@ -33,7 +33,7 @@ def callback():
 #----------從這裡開始複製----------
 
 #會員系統
-def GetUserlist(event):
+def GetUserlist():
     userlist = {}
     file = open('users','r')
     while True :
@@ -41,6 +41,15 @@ def GetUserlist(event):
         if temp[0] == "" : break
         userlist[temp[0]] = temp[1]
     return userlist
+
+#登入系統
+def Login(event,userlist):
+    i = 0
+    for user in userlist.keys():
+        if event.source.user_id == user:
+            return i
+        i+=1
+    return -1
 
 #關鍵字系統
 def KeyWord(event):
@@ -103,8 +112,8 @@ def Reply(event):
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     try:
-        userlist = GetUserList()
-        clientindex = Login(event.source.user_id,userlist)
+        userlist = GetUserlist()
+        clientindex = Login(event,userlist)
         if clientindex > -1:
             Reply(event)
             '''
