@@ -120,7 +120,7 @@ def Reply(event,userlist,clientindex):
             line_bot_api.reply_message(event.reply_token,
                 TextSendMessage(text = Ktemp[1]))
         else:
-            if userlist[event.source.user_id] == '-1':
+            if userlist[clientindex].Situation == '-1':
                 line_bot_api.reply_message(event.reply_token,
                     TextSendMessage(text = "你知道台灣最稀有、最浪漫的鳥是哪一種鳥嗎？"))
                 Write(clientindex,'0',3)
