@@ -52,6 +52,7 @@ def Login(event,userlist):
         i+=1
     return -1
 
+#寫入資料
 def Update(userlist):
     file = open('users','w')
     for user in userlist.keys():
@@ -104,16 +105,24 @@ def Command(event):
     else:
         return False
 
-#回覆函式，指令 > 關鍵字 > 按鈕
-def Reply(event):
+#新增一個參數
+def Reply(event,userlist):
     if not Command(event):
         Ktemp = KeyWord(event)
         if Ktemp[0]:
             line_bot_api.reply_message(event.reply_token,
                 TextSendMessage(text = Ktemp[1]))
         else:
-            line_bot_api.reply_message(event.reply_token,
-                Button(event))
+            if userlist[event.source.user_id] == '-1':
+                line_bot_api.reply_message(event.reply_token,
+                    TextSendMessage(text = "你知道台灣最稀有、最浪漫的鳥是哪一種鳥嗎？"))
+            else:
+                if event.message.text == "黑面琵鷺":
+                    line_bot_api.reply_message(event.reply_token,
+                        TextSendMessage(text = "你居然知道答案!!!"))
+                else:
+                    line_bot_api.reply_message(event.reply_token,
+                        TextSendMessage(text = "答案是：黑面琵鷺!!!因為每年冬天，他們都會到台灣來\"壁咚\""))
 
 # 處理訊息
 @handler.add(MessageEvent, message=TextMessage)
