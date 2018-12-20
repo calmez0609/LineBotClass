@@ -124,6 +124,7 @@ def Reply(event,userlist):
                 else:
                     line_bot_api.reply_message(event.reply_token,
                         TextSendMessage(text = "答案是：黑面琵鷺!!!因為每年冬天，他們都會到台灣來\"壁咚\""))
+                userlist[event.source.user_id] = '-1'
 
 # 處理訊息
 @handler.add(MessageEvent, message=TextMessage)
