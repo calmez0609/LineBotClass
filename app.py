@@ -7,7 +7,6 @@ from linebot.exceptions import (
     InvalidSignatureError
 )
 from linebot.models import *
-import requests
 
 app = Flask(__name__)
 
@@ -40,7 +39,17 @@ class user:
         self.ID = ID
         self.Situation = Situation
 
-#會員系統
+#新增一個新使用者
+def Signup(user_id,name):
+    url = "https://script.google.com/macros/s/AKfycbxn7Slc2_sKHTc6uEy3zmm3Bh_4duiGCXLavUM3RB0a3yzjAxc/exec"
+    payload = {
+        'sheetUrl':"https://docs.google.com/spreadsheets/d/1PGw2Eca9UCR8Qf_8c9_aW9X4x_Mw6SPmDgC5YgOBzX0/edit?usp=sharing",
+        'sheetTag':"工作表1",
+        'data':user_id+','+name+',-1'
+    }
+    requests.get(url, params=payload)
+
+#取得所有會員資料
 def GetUserList():
     url = "https://script.google.com/macros/s/AKfycbwVs2Si91yKz6m3utpaPtsttbh_lUQ8LOQM3Zud2hPFxXCgW3u1/exec"
     payload = {
@@ -63,21 +72,12 @@ def GetUserList():
             break
     return userlist
 
-#登入系統
+#取得目前使用者的index
 def Login(user_id,userlist):
     for user in userlist:
         if user.ID == user_id:
             return userlist.index(user)
     return -1
-
-def Signup(user_id,name):
-    url = "https://script.google.com/macros/s/AKfycbxn7Slc2_sKHTc6uEy3zmm3Bh_4duiGCXLavUM3RB0a3yzjAxc/exec"
-    payload = {
-        'sheetUrl':"https://docs.google.com/spreadsheets/d/1PGw2Eca9UCR8Qf_8c9_aW9X4x_Mw6SPmDgC5YgOBzX0/edit?usp=sharing",
-        'sheetTag':"工作表1",
-        'data':user_id+','+name+',-1'
-    }
-    requests.get(url, params=payload)
 
 #寫入資料
 def Write(Row,data,Col):
@@ -92,16 +92,22 @@ def Write(Row,data,Col):
     requests.get(url, params=payload)
 
 #關鍵字系統
-def KeyWord(event):
-    KeyWordDict = {"你好":"你也好啊",
-                   "你是誰":"我是大帥哥",
-                   "帥":"帥炸了",
-                   "差不多了":"讚!!!"}
+def Keyword(event):
+    KeyWordDict = {"你好":["text","你也好啊"],
+                   "你是誰":["text","我是大帥哥"],
+                   "差不多了":["text","讚!!!"],
+                   "帥":["sticker",'1','120']}
 
     for k in KeyWordDict.keys():
         if event.message.text.find(k) != -1:
-            return [True,KeyWordDict[k]]
-    return [False]
+            if KeyWordDict[k][0] == "text":
+                line_bot_api.reply_message(event.reply_token,TextSendMessage(text = KeyWordDict[k][1]))
+            elif KeyWordDict[k][0] == "sticker":
+                line_bot_api.reply_message(event.reply_token,StickerSendMessage(
+                    package_id=KeyWordDict[k][1],
+                    sticker_id=KeyWordDict[k][2]))
+            return True
+    return False
 
 #指令系統，若觸發指令會回傳True
 def Command(event):
@@ -112,26 +118,22 @@ def Command(event):
     else:
         return False
 
-#回應系統
+#回覆函式，指令 > 關鍵字 > 按鈕
 def Reply(event,userlist,clientindex):
-    if not Command(event):
-        Ktemp = KeyWord(event)
-        if Ktemp[0]:
-            line_bot_api.reply_message(event.reply_token,
-                TextSendMessage(text = Ktemp[1]))
-        else:
-            if userlist[clientindex].Situation == '-1':
+    if userlist[clientindex].Situation == '-1':
+        if not Command(event):
+            if not Keyword(event):
                 line_bot_api.reply_message(event.reply_token,
                     TextSendMessage(text = "你知道台灣最稀有、最浪漫的鳥是哪一種鳥嗎？"))
                 Write(clientindex,'0',3)
-            else:
-                if event.message.text == "黑面琵鷺":
-                    line_bot_api.reply_message(event.reply_token,
-                        TextSendMessage(text = "你居然知道答案!!!"))
-                else:
-                    line_bot_api.reply_message(event.reply_token,
-                        TextSendMessage(text = "答案是：黑面琵鷺!!!因為每年冬天，他們都會到台灣來\"壁咚\""))
-                Write(clientindex,'-1',3)
+    elif userlist[clientindex].Situation == '0':
+        if event.message.text.find("黑面琵鷺") != -1:
+            line_bot_api.reply_message(event.reply_token,
+                TextSendMessage(text = "你居然知道答案!!!"))
+        else:
+            line_bot_api.reply_message(event.reply_token,
+                TextSendMessage(text = "答案是：黑面琵鷺!!!因為每年冬天，他們都會到台灣來\"壁咚\""))
+        Write(clientindex,'-1',3)
 
 # 處理訊息
 @handler.add(MessageEvent, message=TextMessage)
@@ -143,10 +145,6 @@ def handle_message(event):
             #開始使用功能
             line_bot_api.push_message(event.source.user_id, TextSendMessage(text=userlist[clientindex].Name))
             Reply(event,userlist,clientindex)
-            '''
-            line_bot_api.push_message("U95418ebc4fffefdd89088d6f9dabd75b", TextSendMessage(text=event.source.user_id + "說:"))
-            line_bot_api.push_message("U95418ebc4fffefdd89088d6f9dabd75b", TextSendMessage(text=event.message.text))
-            '''
         else:
             message = TemplateSendMessage(
                 alt_text='確認姓名(手機限定)',
@@ -182,6 +180,16 @@ def handle_postback(event):
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text="註冊成功，歡迎來到LineBot世界"))
         elif data[1] == 'f':
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text="請再次輸入您的姓名"))
+
+#處理貼圖事件
+@handler.add(MessageEvent, message=StickerMessage)
+def handle_sticker_message(event):
+    line_bot_api.reply_message(
+        event.reply_token,
+        StickerSendMessage(
+            package_id='1',
+            sticker_id='410')
+    )
 
 import os
 if __name__ == "__main__":
